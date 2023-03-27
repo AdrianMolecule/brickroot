@@ -1,0 +1,10 @@
+ECOR1
+BSA1
+Xba1
+SpeI
+PstI
+NotI
+AvrII
+NheI
+NsiI
+ApoI 
