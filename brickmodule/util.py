@@ -6,7 +6,7 @@ from Bio import SeqIO
 from Bio import Restriction
 from tkinter import *
 
-def loadFasta(fileName:str="short.fa"):
+def loadFasta(fileName:str="default.fa"):
 	record:SeqRecord = SeqIO.read(fileName, "fasta")
 	print("Fasta record name:%s length:%i Sequence: %s" % (record.id, len(record), record.seq))
 	return record
@@ -35,12 +35,19 @@ def checkTranslation( inSeq, outSeq):
 	return successFlag
 #	
 
-def loadListFromFile(targetList, fileName):
+def loadTextFromFile( fileName):
+	record=loadFasta(fileName)
+	return record.seq, 'id {id} {len}'.format(id =record.id, len=len(record))
+
+
+def loadListFromFile( fileName):
 	f = open(fileName, "r")
 	linesList=list()
 	for line in f:
 		linesList.append(line)
-		targetList.insert(END,line)
-	#targetList.
-	#forbiddenItems=["ECOR1","BSA1"]
+	f.close()
+	return 	linesList
+
+
+
  

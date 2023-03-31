@@ -22,7 +22,7 @@ class Window:
         forbiddenItems=[]
         var = Variable(value=forbiddenItems)
         self.forbiddenList = Listbox( self.Main, listvariable=var, height=1, selectmode=EXTENDED )
-        forbiddenList=loadListFromFile(self.forbiddenList,os.path.dirname(os.path.abspath(__file__))+"\\..\\default.txt")
+        forbiddenList=loadListFromFile(os.path.dirname(os.path.abspath(__file__))+"\\..\\default.txt")
         Controller.model.forbiddenList=forbiddenList
         listScrollbar.config(command = self.forbiddenList.yview)
          # Add a Scrollbar(horizontal)
@@ -88,17 +88,7 @@ class Window:
   
     def process(self):
         record:SeqRecord=loadFasta()
-        # # for record in sequenceRecordList:
-        # #     print("%s %i" % (record.id, len(record)),"\n")
-        # se:Seq=sr.seq
-        # #print(dir(se))
-        # st=se
-        # #print("st:",dir(st))
-        # s=str(se)
-        # self.sequenceText.insert(END, "Some text")
-        dnaText=str(record.seq)
-        print("dna text", dnaText)
-        process(self.sequenceText,dnaText,list())
+        process(self.sequenceText,str(record.seq),list())
 
     def loadFastaFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open raw Fasta File',filetypes=(('FASTA files', '*.fa'),('All files', '*.*')))
@@ -106,7 +96,8 @@ class Window:
         
     def loadForbiddenListFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open Forbidden Sequences File',filetypes=(('forbidden Item files', '*.txt'),('All files', '*.*')))
-        loadListFromFile(self.forbiddenList,fileName)
+        Controller.model.forbiddenList=loadListFromFile(fileName)
+        Controller.updateView(self)
         
     # end class    
 

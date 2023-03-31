@@ -1,1 +1,3 @@
-licanse.txt
+license.txt
+*.pyc
+*.pyo
