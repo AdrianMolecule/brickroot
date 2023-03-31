@@ -3,6 +3,8 @@ import os
 from tkinter import filedialog
 from collections import deque
 from brickmodule.util import *
+from brickmodule.process import *
+from brickmodule.Controller import Controller
  
 class Window:
     def __init__(self, master, initialText:str):
@@ -11,35 +13,39 @@ class Window:
         self.stack = deque(maxlen = 10)
         self.stackcursor = 0
         #LABEL
-        self.label = Label(self.Main, text = "Brick Designer Label")
-        self.label.pack(padx = 5, pady = 5)
+        self.sequenceLabel = Label(self.Main, text = "Please load a Fasta File")
+        self.sequenceLabel.pack(padx = 5, pady = 5)
         #ForbiddenList
-         # Add a List Scrollbar(vertical)'
+        # Add a List Scrollbar(vertical)'
         listScrollbar=Scrollbar(self.Main, orient='vertical')
         listScrollbar.pack(side = RIGHT, fill = BOTH)
         forbiddenItems=[]
         var = Variable(value=forbiddenItems)
         self.forbiddenList = Listbox( self.Main, listvariable=var, height=1, selectmode=EXTENDED )
-        loadListFromFile(self.forbiddenList,os.path.dirname(os.path.abspath(__file__))+"\\..\\default.txt")
+        forbiddenList=loadListFromFile(self.forbiddenList,os.path.dirname(os.path.abspath(__file__))+"\\..\\default.txt")
+        Controller.model.forbiddenList=forbiddenList
         listScrollbar.config(command = self.forbiddenList.yview)
-        self.forbiddenList.pack(side= RIGHT, fill= BOTH)     
-        #
          # Add a Scrollbar(horizontal)
         textScrollbar=Scrollbar(self.Main, orient='horizontal')
         textScrollbar.pack(side=BOTTOM, fill='x')  
-        self.infoText = Text(self.Main, xscrollcommand=textScrollbar.set,wrap="none" )
-        self.infoText.insert(END, initialText)
-        self.infoText.edit
-        self.infoText.pack(padx = 5, pady = 5)
-        textScrollbar.config(command=self.infoText.xview)
+        self.sequenceText = Text(self.Main, xscrollcommand=textScrollbar.set,wrap="none" )
+        self.sequenceText.insert(END, initialText)
+        text,label=loadTextFromFile( os.path.dirname(os.path.abspath(__file__))+"\\..\\default.fa")
+        Controller.model.sequenceText=text
+        Controller.model.sequenceLabel=label
+        self.sequenceText.edit
+        Controller.updateView(self)
+        self.forbiddenList.pack(side= RIGHT, fill= BOTH)     
+        self.sequenceText.pack(padx = 5, pady = 5)
+        textScrollbar.config(command=self.sequenceText.xview)
         #text.pack()
         self.menu = Menu(self.Main)
-        self.menu.add_command(label = "File", command = self.loadFile)
+        self.menu.add_command(label = "File", command = self.loadFastaFromFile)
         self.menu.add_command(label = "Print", command = self.printStack)
         self.menu.add_command(label = "Undo", command = self.undo)
         self.menu.add_command(label = "Redo", command = self.redo)
-        self.menu.add_command(label = "setText", command = self.setText)
-        self.menu.add_command(label = "loadForbiddenListFromFile", command = self.loadForbiddenListFromFile)
+        self.menu.add_command(label = "Process Fasta", command = self.process)
+        self.menu.add_command(label = "Load Forbidden List From File", command = self.loadForbiddenListFromFile)
         self.master.config(menu = self.menu)
  
         self.B1 = Button(self.Main, text = "Print", width = 8, command = self.display)
@@ -53,26 +59,26 @@ class Window:
         self.Main.pack(padx = 5, pady = 5)
  
     def display(self):
-        print(self.infoText.get("1.0", "end"))     
+        print(self.sequenceText.get("1.0", "end"))     
 
     def clear(self):
-        self.infoText.delete("1.0", "end")
+        self.sequenceText.delete("1.0", "end")
  
     def stackify(self):
-        self.stack.append(self.infoText.get("1.0", "end - 1c"))
+        self.stack.append(self.sequenceText.get("1.0", "end - 1c"))
         if self.stackcursor < 9: self.stackcursor += 1
  
     def undo(self):
         if self.stackcursor != 0:
             self.clear()
             if self.stackcursor > 0: self.stackcursor -= 1
-            self.infoText.insert("0.0", self.stack[self.stackcursor])
+            self.sequenceText.insert("0.0", self.stack[self.stackcursor])
  
     def redo(self):
         if len(self.stack) > self.stackcursor + 1:
             self.clear()
             if self.stackcursor < 9: self.stackcursor += 1
-            self.infoText.insert("0.0", self.stack[self.stackcursor])
+            self.sequenceText.insert("0.0", self.stack[self.stackcursor])
  
     def printStack(self):
         i = 0
@@ -80,17 +86,23 @@ class Window:
             print(str(i) + " " + stack)
             i += 1
   
-    def setText(self):
-        self.infoText.insert(END, "SOme text")
+    def process(self):
+        record:SeqRecord=loadFasta()
+        # # for record in sequenceRecordList:
+        # #     print("%s %i" % (record.id, len(record)),"\n")
+        # se:Seq=sr.seq
+        # #print(dir(se))
+        # st=se
+        # #print("st:",dir(st))
+        # s=str(se)
+        # self.sequenceText.insert(END, "Some text")
+        dnaText=str(record.seq)
+        print("dna text", dnaText)
+        process(self.sequenceText,dnaText,list())
 
-
-    def loadFile(self):
-        #filename:str = filedialog.askopenfilename(title='Open raw Fasta File', initialdir='/',filetypes=(('text files', '*.txt'),('All files', '*.*')))
-        filename:str = filedialog.askopenfilename(title='Open raw Fasta File',filetypes=(('FASTA files', '*.fa'),('All files', '*.*')))
-        record=loadFasta(filename)
-        newText= 'id {id} {len} {sequence}'.format(id =record.id, len=len(record), sequence=record.seq )
-        print("newText:" +newText)
-        self.infoText.insert(END,"\n"+newText) # replace can also be used
+    def loadFastaFromFile(self):
+        fileName:str = filedialog.askopenfilename(title='Open raw Fasta File',filetypes=(('FASTA files', '*.fa'),('All files', '*.*')))
+        loadTextFromFile(self.sequenceText, self.sequenceLabel, fileName)
         
     def loadForbiddenListFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open Forbidden Sequences File',filetypes=(('forbidden Item files', '*.txt'),('All files', '*.*')))
