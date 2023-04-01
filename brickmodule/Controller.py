@@ -10,12 +10,12 @@ class Controller:
     #     self.view=view
 
     def updateView(ui):
-        ui.forbiddenList.delete(0,END)
-        for line in Controller.model.forbiddenList:
-            ui.forbiddenList.insert(END,line)
-            ui.sequenceText.delete("1.0", "end")
-
-        ui.sequenceText.insert(END,"\n"+ Controller.model.sequenceText) # replace can also be used
+        # ui.forbiddenList.delete(0,END)
+        # for line in Controller.model.forbiddenList:
+        #     ui.forbiddenList.insert(END,line)
+        #     ui.sequenceText.delete("1.0", "end")
+        ui.clear()
+        ui.sequenceText.insert(END,"\n"+ "" if Controller.model.sequenceText is None else Controller.model.sequenceText) # replace can also be used
         ui.sequenceLabel['text'] =Controller.model.sequenceLabel # replace can also be used
         print("view was updated from model")
 
