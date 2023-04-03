@@ -8,6 +8,8 @@ from brickmodule.Controller import Controller
 from tkinter import messagebox
  
 ''' upon start default.fa and default.txt- with forbidden enzymes are loaded'''
+#https://www.bioinformatics.org/sms2/rev_trans.html
+#https://edinburgh-genome-foundry.github.io/
 class Window:
     def __init__(self, master):
         self.master = master
@@ -93,6 +95,19 @@ class Window:
             i += 1
   
     def optimize(self):
+        root=self.master
+        Tk.Entry(root).grid()   # something to interact with
+        def dismiss ():
+            dlg.grab_release()
+            dlg.destroy()
+
+        dlg = Toplevel(root)
+        Tk.Button(dlg, text="Done", command=dismiss).grid()
+        dlg.protocol("WM_DELETE_WINDOW", dismiss) # intercept close button
+        dlg.transient(root)   # dialog window is related to main
+        dlg.wait_visibility() # can't grab until window appears, so we wait
+        dlg.grab_set()        # ensure all input goes to our window
+        dlg.wait_window()     # block until window is destroyed
         optimize(self.sequenceText,Controller.model.sequenceText)
 
     def loadFastaFromFile(self):
@@ -126,8 +141,10 @@ class Window:
 def mainUI(text:str):
     root = Tk()
     root.title('Brick Designer')
+    root.geometry(str(root.winfo_screenwidth())+"x"+str( int(root.winfo_screenheight()*.7)))
+    #root.state('zoomed')
     window = Window(root)
-    root.geometry("650x250")
+    #root.attributes('-fullscreen', True)
     #screen_width = win.winfo_screenwidth()
     root.bind("<Key>", lambda event: window.stackify())
     root.protocol( "WM_DELETE_WINDOW", onExit )

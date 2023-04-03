@@ -8,21 +8,17 @@ from tkinter import *
 
 def loadFasta(fileName:str="default.fa"):
 	record:SeqRecord = SeqIO.read(fileName, "fasta")
-	print("Fasta record name:%s length:%i Sequence: %s" % (record.id, len(record), record.seq))
+	#print("Fasta record name:%s length:%i Sequence: %s" % (record.id, len(record), record.seq))
 	return record
 
-def loadFastas(fileName:str="short.fa"):
+def loadFastas(fileName:str="default.fa"):
 	fIn=open(fileName,'r')
 	sequenceRecordIterator=SeqIO.parse(fileName, "fasta")
 	sequenceRecordList=[]
 	for record in sequenceRecordIterator:
-		print("Fasta record name:%s length:%i Sequence: %s" % (record.id, len(record), record.seq))
+		#print("Fasta record name:%s length:%i Sequence: %s" % (record.id, len(record), record.seq))
 		sequenceRecordList.append(record)
 	return 	sequenceRecordList
-
-
-def printRed(message:str):
-	print('\033[1;31m' + message + '\033[0m') 
 
 def checkTranslation( inSeq, outSeq):
 	"""Checks the translation of the engineered sequence against the wild-type sequence"""
@@ -37,7 +33,7 @@ def checkTranslation( inSeq, outSeq):
 
 def loadTextFromFile( fileName):
 	record=loadFasta(fileName)
-	return record.seq, 'id {id} {len}'.format(id =record.id, len=len(record))
+	return str(record.seq), '     {id}       length: {len}'.format(id =record.id, len=len(record))
 
 
 def loadListFromFile( fileName):
@@ -48,6 +44,15 @@ def loadListFromFile( fileName):
 	f.close()
 	return 	linesList
 
+def saveLastFastaFileToFile(path:str):
+	f = open("lastusedfasta.txt", "w")
+	f.write(path)
+	f.close()
 
+def readLastUsedFastaFileFromFile():
+	f = open("lastusedfasta.txt", "r")
+	fileName=f.read()
+	f.close()
+	return fileName
 
  

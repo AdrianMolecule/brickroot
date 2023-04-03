@@ -17,7 +17,8 @@ class Controller:
         ui.clear()
         ui.sequenceText.insert(END,"\n"+ "" if Controller.model.sequenceText is None else Controller.model.sequenceText) # replace can also be used
         ui.sequenceLabel['text'] =Controller.model.sequenceLabel # replace can also be used
-        print("view was updated from model")
+        ui.master.title('Brick Designer    Sequence: '+Controller.model.sequenceLabel )
+        print("view was updated from model") 
 
 
 

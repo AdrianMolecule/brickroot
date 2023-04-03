@@ -13,6 +13,7 @@ class Model:
         self.problem:DnaOptimizationProblem=None
         self.sequenceText:str=None
         self.sequenceLabel:str=None
+        self.loadedSequenceFileName:str=None
         self.lastFastaFile:str=None #os.path.dirname(os.path.abspath(__file__))+"\\..\\default.fa"
 
     def dump(self):
@@ -27,5 +28,6 @@ class Model:
         print("sequenceText:", self.sequenceText)
         print("sequenceLabel:", self.sequenceLabel)
         print("lastFastaFile:", self.lastFastaFile)
+        print("loadedSequenceFileName:", self.loadedSequenceFileName)
         print("problem:", self.problem)
 
