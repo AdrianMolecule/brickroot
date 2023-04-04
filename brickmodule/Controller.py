@@ -21,11 +21,3 @@ class Controller:
         print("view was updated from model") 
 
 
-
-# controllerSingleton:Controller=Controller(Model(),list())
-
-
-# controllerSingleton.updateView()
-# controllerSingleton.model.dump()
-# controllerSingleton.model.forbiddenList=["AAA","BBB"]
-# controllerSingleton.model.dump()
