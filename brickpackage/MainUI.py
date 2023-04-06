@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 from collections import deque
-from brickpackage import util
+from brickpackage.Util import *
 from brickpackage.process import *
 from brickpackage.Controller import Controller
 from tkinter import messagebox
@@ -22,7 +22,7 @@ class Window:
         # Add a List Scrollbar(vertical)'
         # listScrollbar=Scrollbar(self.Main, orient='vertical')
         # listScrollbar.pack(side = RIGHT, fill = BOTH)
-        loadModelFromFile()
+        Util.loadModelFromFile()
         forbiddenItems=[]
         var = Variable(value=forbiddenItems)
         # self.forbiddenList = Listbox( self.Main, listvariable=var, height=1, selectmode=EXTENDED )
@@ -94,7 +94,7 @@ class Window:
 
     def loadFastaFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open raw Fasta File',filetypes=(('FASTA files', '*.fa'),('All files', '*.*')))
-        text,label=loadTextFromFile( fileName)
+        text,label==Util.loadTextFromFile( fileName)
         Controller.model.sequenceText=text
         Controller.model.sequenceLabel=label
         Controller.model.lastFastaFile=fileName
@@ -115,7 +115,7 @@ class Window:
 
     def loadForbiddenListFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open Forbidden Sequences File',filetypes=(('forbidden Item files', '*.txt'),('All files', '*.*')))
-        Controller.model.forbiddenList=loadListFromFile(fileName)
+        Controller.model.forbiddenList==Util.loadListFromFile(fileName)
         self.verifyForbidden()
         Controller.updateView(self)
         self.showForbiddenListFromFile()
@@ -148,7 +148,7 @@ def mainUI(text:str):
 
 def onExit():
      #messagebox.showinfo("bye", "bye")
-     saveModelToFile()
+     Util.saveModelToFile()
      #os.path.dirname(os.path.abspath(__file__))+"\\..\\default.fa"
      quit()
 	

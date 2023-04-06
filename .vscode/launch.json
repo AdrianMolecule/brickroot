@@ -16,7 +16,7 @@
             "name": "Python: Brick Test",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/test.py",
+            "program": "${workspaceFolder}/start.py",
             "console": "integratedTerminal",
             "justMyCode": false
         },
