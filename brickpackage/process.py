@@ -1,11 +1,15 @@
-from dnachisel import *
-from brickmodule.util import *
-from Bio.Seq import Seq
+
+from brickpackage.OptimizeDialog import OptimizeDialog
 from Bio.SeqFeature import SeqFeature, SimpleLocation, ExactPosition
+from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-from brickmodule.Controller import Controller
-from brickmodule.OptimizeDialog import OptimizeDialog
-from tkinter import messagebox
+from brickpackage.util import *
+from brickpackage.Controller import Controller
+
+from tkinter import messagebox   
+from dnachisel import *
+from dnachisel.DnaOptimizationProblem import NoSolutionError
+from dnachisel.DnaOptimizationProblem import DnaOptimizationProblem
 #benchling utube tutorial https://www.youtube.com/watch?v=oIcz5fQgtS8&t=865s
 # benchling does GC content utidine deplition and set aside region
 # s, and Wants to do hairpins and loops
@@ -35,9 +39,22 @@ def optimize(root, sequenceText):
     root.wait_window(d.top)
     constraints:list=list()
     #constraints.append(  AvoidPattern("BsaI_site"))
-    constraints.append(AvoidHairpins())
+    if len(Controller.model.sequenceText)==0:
+        messagebox.showerror("Missing Sequence","please load a sequence")
+        return
+    if(Controller.model.checkHairpins==1):
+        constraints.append(AvoidHairpins())
     constraints.append(EnforceTranslation())
-    constraints.append(EnforceGCContent(mini=float(Controller.model.minGcContent)/100, maxi=float(Controller.model.maxGcContent)/100, window=50))
+    if(Controller.model.checkGcContent==1):
+        mi=float(Controller.model.minGcContent)
+        ma=float(Controller.model.minGcContent)
+        if mi<0 or mi>=100:
+            messagebox.showerror("minimum GC content error","minimum GC content should be between 0 and 100")
+            return
+        if ma<mi or ma>=100:
+            messagebox.showerror("maximum GC content error","maximum GC content should be between min GC content and 100")
+            return
+        constraints.append(EnforceGCContent(mini=float(Controller.model.minGcContent)/100, maxi=float(Controller.model.maxGcContent)/100, window=50))
     for pat in Controller.model.forbiddenList:
         constraints.append( AvoidPattern(pat.strip() +"_site"))
 
@@ -48,7 +65,12 @@ def optimize(root, sequenceText):
         objectives=[CodonOptimize(species='e_coli')] #, location=(500, 1400))]
     )
     # SOLVE THE CONSTRAINTS, OPTIMIZE WITH RESPECT TO THE OBJECTIVE
-    problem.resolve_constraints()
+    try:
+        problem.resolve_constraints()
+    except NoSolutionError:
+        #problem.write_no_solution_report like dnaoptimization problem line 243
+        messagebox.showerror("Error","Cannot find a solution, please review contraints")
+        return
     #problem.optimize()
     Controller.model.problem=problem
     #print("problem.number_of_edits",problem.number_of_edits()) 

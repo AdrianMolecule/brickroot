@@ -1,3 +1,7 @@
-from brickmodule.MainUI import *
+from brickpackage.MainUI import *
 
-mainUI("BioBrick")
+mainUI("")
+
+# pip uninstall dnachisel --no-cache-dir
+# pip install # pip install pandas 
+ 

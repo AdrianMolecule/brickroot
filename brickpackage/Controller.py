@@ -1,5 +1,6 @@
-from brickmodule.Model import Model
+import brickpackage.Model
 from tkinter import END
+from brickpackage.Model import Model
 
 class Controller:
 
@@ -17,7 +18,10 @@ class Controller:
         ui.clear()
         ui.sequenceText.insert(END,"\n"+ "" if Controller.model.sequenceText is None else Controller.model.sequenceText) # replace can also be used
         ui.sequenceLabel['text'] =Controller.model.sequenceLabel # replace can also be used
-        ui.master.title('Brick Designer    Sequence: '+Controller.model.sequenceLabel )
+        if(Controller.model.sequenceLabel!=None):
+            ui.master.title('Brick Designer    Sequence:'+Controller.model.sequenceLabel)
+        else:
+            ui.master.title('Brick Designer ')        
         print("view was updated from model") 
 
 

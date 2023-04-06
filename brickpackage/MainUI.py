@@ -1,10 +1,9 @@
 from tkinter import *
-import os
 from tkinter import filedialog
 from collections import deque
-from brickmodule.util import *
-from brickmodule.process import *
-from brickmodule.Controller import Controller
+from brickpackage import util
+from brickpackage.process import *
+from brickpackage.Controller import Controller
 from tkinter import messagebox
  
 ''' upon start default.fa and default.txt- with forbidden enzymes are loaded'''
@@ -23,22 +22,17 @@ class Window:
         # Add a List Scrollbar(vertical)'
         # listScrollbar=Scrollbar(self.Main, orient='vertical')
         # listScrollbar.pack(side = RIGHT, fill = BOTH)
+        loadModelFromFile()
         forbiddenItems=[]
         var = Variable(value=forbiddenItems)
         # self.forbiddenList = Listbox( self.Main, listvariable=var, height=1, selectmode=EXTENDED )
-        forbiddenList=loadListFromFile(os.path.dirname(os.path.abspath(__file__))+"\\..\\default.txt")
-        Controller.model.forbiddenList=forbiddenList
+
         #listScrollbar.config(command = self.forbiddenList.yview)
          # Add a Scrollbar(horizontal)
         textScrollbar=Scrollbar(self.Main, orient='horizontal')
         textScrollbar.pack(side=BOTTOM, fill='x')  
         self.sequenceText = Text(self.Main, xscrollcommand=textScrollbar.set,wrap="none" )
         #self.sequenceText.insert(END, initialText)
-        Controller.model.lastFastaFile=readLastUsedFastaFileFromFile()
-        if Controller.model.lastFastaFile is not None:
-            text,label=loadTextFromFile( Controller.model.lastFastaFile)
-            Controller.model.sequenceText=text
-            Controller.model.sequenceLabel=label
         self.sequenceText.edit
         Controller.updateView(self)
         #self.forbiddenList.pack(side= RIGHT, fill= BOTH)     
@@ -51,8 +45,8 @@ class Window:
         # self.menu.add_command(label = "Undo", command = self.undo)
         # self.menu.add_command(label = "Redo", command = self.redo)
         self.menu.add_command(label = "Optimize", command = self.optimize)
-        self.menu.add_command(label = "Show Forbidden", command = self.showForbiddenListFromFile)
-        self.menu.add_command(label = "Load Forbidden", command = self.loadForbiddenListFromFile)
+        #self.menu.add_command(label = "Show Forbidden", command = self.showForbiddenListFromFile)
+        self.menu.add_command(label = "Load Forbidden Sites", command = self.loadForbiddenListFromFile)
         self.menu.add_command(label = "Debug", command = self.debug)
         self.master.config(menu = self.menu)
  
@@ -95,8 +89,8 @@ class Window:
             i += 1
   
     def optimize(self):
-        root=self.master
-        optimize(root, self.sequenceText)
+        rootWindow=self.master
+        optimize(rootWindow, self.sequenceText)
 
     def loadFastaFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open raw Fasta File',filetypes=(('FASTA files', '*.fa'),('All files', '*.*')))
@@ -105,10 +99,24 @@ class Window:
         Controller.model.sequenceLabel=label
         Controller.model.lastFastaFile=fileName
         Controller.updateView(self)
-         
+     
+    def verifyForbidden(self):
+        for line in Controller.model.forbiddenList:
+            x=4
+            # ap: AvoidPattern=AvoidPattern(line)
+            # pat = SequencePattern.from_string(line)                     
+            # print(ap)
+            # print(isinstance(pat, AvoidPattern))
+            # # try:
+            # #     print(pat.enzyme_site) 
+            # # except AttributError:           
+            # #     messagebox.showEror("Error","unknown enzyme: "+listString)
+            # #     return
+
     def loadForbiddenListFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open Forbidden Sequences File',filetypes=(('forbidden Item files', '*.txt'),('All files', '*.*')))
         Controller.model.forbiddenList=loadListFromFile(fileName)
+        self.verifyForbidden()
         Controller.updateView(self)
         self.showForbiddenListFromFile()
 
@@ -125,24 +133,24 @@ class Window:
         
     # end class    
 
-
 def mainUI(text:str):
-    root = Tk()
-    root.title('Brick Designer')
-    root.geometry(str(root.winfo_screenwidth())+"x"+str( int(root.winfo_screenheight()*.7)))
-    #root.state('zoomed')
-    window = Window(root)
-    #root.attributes('-fullscreen', True)
+    rootWindow = Tk()
+    rootWindow.title('Brick Designer')
+    rootWindow.geometry(str(rootWindow.winfo_screenwidth())+"x"+str( int(rootWindow.winfo_screenheight()*.7)))
+    #rootWindow.state('zoomed')
+    window = Window(rootWindow)
+    #rootWindow.attributes('-fullscreen', True)
     #screen_width = win.winfo_screenwidth()
-    root.bind("<Key>", lambda event: window.stackify())
-    root.protocol( "WM_DELETE_WINDOW", onExit )
-    root.mainloop()
+    rootWindow.bind("<Key>", lambda event: window.stackify())
+    rootWindow.protocol( "WM_DELETE_WINDOW", onExit )
+    rootWindow.mainloop()
 
 
 def onExit():
      #messagebox.showinfo("bye", "bye")
-     saveLastFastaFileToFile(Controller.model.lastFastaFile)
+     saveModelToFile()
      #os.path.dirname(os.path.abspath(__file__))+"\\..\\default.fa"
      quit()
-
+	
+   
 
