@@ -94,29 +94,18 @@ class Window:
 
     def loadFastaFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open raw Fasta File',filetypes=(('FASTA files', '*.fa'),('All files', '*.*')))
-        text,label==Util.loadTextFromFile( fileName)
-        Controller.model.sequenceText=text
-        Controller.model.sequenceLabel=label
+        theText:str
+        theLabel:str
+        theText,theLabel=Util.loadTextFromFile( fileName)
+        Controller.model.sequenceText=theText
+        Controller.model.sequenceLabel=theLabel
         Controller.model.lastFastaFile=fileName
         Controller.updateView(self)
-     
-    def verifyForbidden(self):
-        for line in Controller.model.forbiddenList:
-            x=4
-            # ap: AvoidPattern=AvoidPattern(line)
-            # pat = SequencePattern.from_string(line)                     
-            # print(ap)
-            # print(isinstance(pat, AvoidPattern))
-            # # try:
-            # #     print(pat.enzyme_site) 
-            # # except AttributError:           
-            # #     messagebox.showEror("Error","unknown enzyme: "+listString)
-            # #     return
 
     def loadForbiddenListFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open Forbidden Sequences File',filetypes=(('forbidden Item files', '*.txt'),('All files', '*.*')))
-        Controller.model.forbiddenList==Util.loadListFromFile(fileName)
-        self.verifyForbidden()
+        Controller.model.forbiddenList=Util.loadListFromFile(fileName)
+        Util.verifyForbidden()
         Controller.updateView(self)
         self.showForbiddenListFromFile()
 

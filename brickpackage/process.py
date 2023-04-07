@@ -1,9 +1,9 @@
-
+from tkinter import END
 from brickpackage.OptimizeDialog import OptimizeDialog
 from Bio.SeqFeature import SeqFeature, SimpleLocation, ExactPosition
-from Bio.Seq import Seq
+from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
-from brickpackage.Util import *
+from brickpackage.Util import Util
 from brickpackage.Controller import Controller
 
 from tkinter import messagebox   

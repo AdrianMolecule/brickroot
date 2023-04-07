@@ -13,7 +13,7 @@
             "justMyCode": true
         },
         {
-            "name": "Python: Brick Test",
+            "name": "Python: Brick START",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/start.py",

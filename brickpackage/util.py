@@ -1,9 +1,11 @@
 """Utility methods"""
 from configparser import ConfigParser
+from tkinter import messagebox
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio import Restriction
+from dnachisel import AvoidPattern
 from brickpackage.Controller import Controller
 import os
 
@@ -11,7 +13,6 @@ import os
 class Util:
 	def loadFasta(fileName:str="default.fa"):
 		record:SeqRecord = SeqIO.read(fileName, "fasta")
-		#print("Fasta record name:%s length:%i Sequence: %s" % (record.id, len(record), record.seq))
 		return record
 
 	def loadFastas(fileName:str="default.fa"):
@@ -24,20 +25,18 @@ class Util:
 		return 	sequenceRecordList
 
 	def checkTranslation( inSeq, outSeq):
-		"""Checks the translation of the engineered sequence against the wild-type sequence"""
+		'''Checks the translation of the engineered sequence against the wild-type sequence'''
 		myInSeq=SeqRecord(Seq(inSeq))
 		myOutSeq=SeqRecord(Seq(outSeq))
 		if myInSeq.translate().seq==myOutSeq.translate().seq:
 			successFlag=True
 		else:
 			successFlag=False
-		return successFlag
-	#	
+		return successFlag	
 
 	def loadTextFromFile( fileName):
 		record=Util.loadFasta(fileName)
 		return str(record.seq), '     {id}       length: {len}'.format(id =record.id, len=len(record))
-
 
 	def loadListFromFile( fileName):
 		f = open(fileName, "r")
@@ -56,6 +55,7 @@ class Util:
 			Controller.model.sequenceText=text
 			Controller.model.sequenceLabel=label   
 		Controller.model.forbiddenList==Util.loadListFromFile(os.path.dirname(os.path.abspath(__file__))+"\\..\\default.txt")
+		Util.verifyForbidden()
 		Controller.model.minGcContent=parser.getfloat("general",'minGcContent')	
 		Controller.model.maxGcContent=parser.getfloat("general",'maxGcContent')
 		print("Loaded Model:",Controller.model.dump())
@@ -70,4 +70,12 @@ class Util:
 		configFile= open(os.path.dirname(os.path.abspath(__file__))+"\\..\\prefs.config", 'w') 
 		config.write(configFile)
 		configFile.close()
+
+	def verifyForbidden():
+		for line in Controller.model.forbiddenList:
+			ap:AvoidPattern=AvoidPattern(line)
+			if ap.pattern.name is None:       
+				messagebox.showEror("Error",line+" seems to be unknown.\n pleasse doublecheck the spelling")
+				return
+
 
