@@ -54,7 +54,7 @@ class Util:
 			text,label=Util.loadTextFromFile( Controller.model.lastFastaFile)
 			Controller.model.sequenceText=text
 			Controller.model.sequenceLabel=label   
-		Controller.model.forbiddenList==Util.loadListFromFile(os.path.dirname(os.path.abspath(__file__))+"\\..\\default.txt")
+		Controller.model.forbiddenList=Util.loadListFromFile(os.path.dirname(os.path.abspath(__file__))+"\\..\\default.txt")
 		Util.verifyForbidden()
 		Controller.model.minGcContent=parser.getfloat("general",'minGcContent')	
 		Controller.model.maxGcContent=parser.getfloat("general",'maxGcContent')
@@ -73,9 +73,9 @@ class Util:
 
 	def verifyForbidden():
 		for line in Controller.model.forbiddenList:
-			ap:AvoidPattern=AvoidPattern(line)
+			ap:AvoidPattern=AvoidPattern(line.strip() +"_site")
 			if ap.pattern.name is None:       
-				messagebox.showEror("Error",line+" seems to be unknown.\n pleasse doublecheck the spelling")
-				return
+				messagebox.showerror("Error in forbidden List",line+" seems to be unknown.\n please doublecheck the spelling")
+
 
 
