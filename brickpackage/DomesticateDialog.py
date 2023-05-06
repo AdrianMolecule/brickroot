@@ -1,6 +1,6 @@
 from tkinter import *
 from brickpackage.Controller import Controller
-class OptimizeDialog:
+class DomesticateDialog:
     def __init__(self, parent, title, labeltext = '' ):
         self.top = Toplevel(parent)
         self.top.transient(parent)

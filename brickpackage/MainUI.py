@@ -9,6 +9,10 @@ from tkinter import messagebox
 ''' upon start default.fa and default.txt- with forbidden enzymes are loaded'''
 #https://www.bioinformatics.org/sms2/rev_trans.html
 #https://edinburgh-genome-foundry.github.io/
+# https://www.biorxiv.org/content/biorxiv/early/2017/11/26/225284.full.pdf
+#https://en.wikipedia.org/wiki/Chi_site
+# maybe call it standardization or domestication or
+# https://www.biorxiv.org/content/biorxiv/early/2017/11/26/225284.full.pdf shepherd
 class Window:
     def __init__(self, master):
         self.master = master
@@ -44,7 +48,7 @@ class Window:
         # self.menu.add_command(label = "Print", command = self.printStack)
         # self.menu.add_command(label = "Undo", command = self.undo)
         # self.menu.add_command(label = "Redo", command = self.redo)
-        self.menu.add_command(label = "Optimize", command = self.optimize)
+        self.menu.add_command(label = "Domesticate", command = self.domesticate)
         #self.menu.add_command(label = "Show Forbidden", command = self.showForbiddenListFromFile)
         self.menu.add_command(label = "Load Forbidden Sites", command = self.loadForbiddenListFromFile)
         self.menu.add_command(label = "Debug", command = self.debug)
@@ -88,9 +92,9 @@ class Window:
             print(str(i) + " " + stack)
             i += 1
   
-    def optimize(self):
+    def domesticate(self):
         rootWindow=self.master
-        optimize(rootWindow, self.sequenceText)
+        domesticate(rootWindow, self.sequenceText)
 
     def loadFastaFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open raw Fasta File',filetypes=(('FASTA files', '*.fa'),('All files', '*.*')))
