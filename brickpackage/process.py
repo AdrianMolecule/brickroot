@@ -1,5 +1,5 @@
 from tkinter import END
-from brickpackage.OptimizeDialog import OptimizeDialog
+from brickpackage.DomesticateDialog import DomesticateDialog
 from Bio.SeqFeature import SeqFeature, SimpleLocation, ExactPosition
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
@@ -33,9 +33,9 @@ from dnachisel.DnaOptimizationProblem import DnaOptimizationProblem
 # DEFINE THE OPTIMIZATION PROBLEM
 #s="AAAGGTCTCAAAAAA"
 
-def optimize(root, sequenceText):
+def domesticate(root, sequenceText):
     # see from Bio import Restriction for name of Retrictions
-    d = OptimizeDialog(root, "Optimize Options")
+    d = DomesticateDialog(root, "Domesticate/Optimize Options")
     root.wait_window(d.top)
     constraints:list=list()
     #constraints.append(  AvoidPattern("BsaI_site"))
