@@ -6,76 +6,39 @@ from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio import Restriction
 from dnachisel import AvoidPattern
-from brickpackage.Controller import Controller
+from tkinter import Text, END
+from Bio.SeqFeature import SeqFeature
+from Bio.SeqUtils import seq3
 import os
 
 ''' only static methods here. More like a container for utility methods'''
 class Util:
-	def loadFasta(fileName:str="default.fa"):
-		record:SeqRecord = SeqIO.read(fileName, "fasta")
-		return record
 
-	def loadFastas(fileName:str="default.fa"):
-		fIn=open(fileName,'r')
-		sequenceRecordIterator=SeqIO.parse(fileName, "fasta")
-		sequenceRecordList=[]
-		for record in sequenceRecordIterator:
-			#print("Fasta record name:%s length:%i Sequence: %s" % (record.id, len(record), record.seq))
-			sequenceRecordList.append(record)
-		return 	sequenceRecordList
-
-	def checkTranslation( inSeq, outSeq):
-		'''Checks the translation of the engineered sequence against the wild-type sequence'''
-		myInSeq=SeqRecord(Seq(inSeq))
-		myOutSeq=SeqRecord(Seq(outSeq))
-		if myInSeq.translate().seq==myOutSeq.translate().seq:
-			successFlag=True
+	def appendDnaLineWithHighlightedCodons( sequenceTextBox:Text, text:str, features:list=None):
+		'''append a new line in themain window a DNA line and colors separately codons assuming 0 start frame'''
+		sequenceTextBox.insert(END,"\n"+text) # replace can also be used
+		highlightCodons( sequenceTextBox,text)
+		print("line count:",sequenceTextBox.count("1.0","end",'lines')[0])
+		lastLine=sequenceTextBox.count("1.0","end",'lines')[0]
+		if features is not None:
+			sequenceTextBox.tag_config("changedBases", background="red", foreground="black")
+			for feature in features: # real changes
+				#print("feature:",feature.location)
+				sequenceTextBox.tag_add("changedBases", str(lastLine)+"."+str(feature.location.start), str(lastLine)+"."+str(feature.location.end))
+			myInSeq=SeqRecord(Seq(text))
+			transText=seq3(myInSeq.translate().seq)
+			sequenceTextBox.insert(END,"\n"+transText) # replace can also be used
+			for feature in features:
+				sequenceTextBox.tag_add("changedBases", str(lastLine+1)+"."+str(feature.location.start), str(lastLine+1)+"."+str(feature.location.end))
+			highlightCodons( sequenceTextBox,transText)
 		else:
-			successFlag=False
-		return successFlag	
+			highlightCodons( sequenceTextBox,text)
 
-	def loadTextFromFile( fileName):
-		record=Util.loadFasta(fileName)
-		return str(record.seq), '     {id}       length: {len}'.format(id =record.id, len=len(record))
+def highlightCodons( sequenceTextBox:Text, text:str):
+		print("line count:",sequenceTextBox.count("1.0","end",'lines')[0])
+		lastLine=sequenceTextBox.count("1.0","end",'lines')[0]
 
-	def loadListFromFile( fileName):
-		f = open(fileName, "r")
-		linesList=list()
-		for line in f:
-			linesList.append(line)
-		f.close()
-		return 	linesList
-
-	def loadModelFromFile():
-		parser:ConfigParser=ConfigParser()
-		parser.read(os.path.dirname(os.path.abspath(__file__))+"\\..\\prefs.config")
-		Controller.model.lastFastaFile=parser.get("general",'lastFastaFile')	
-		if Controller.model.lastFastaFile is not None and not Controller.model.lastFastaFile.strip()=='' :
-			text,label=Util.loadTextFromFile( Controller.model.lastFastaFile)
-			Controller.model.sequenceText=text
-			Controller.model.sequenceLabel=label   
-		Controller.model.forbiddenList=Util.loadListFromFile(os.path.dirname(os.path.abspath(__file__))+"\\..\\default.txt")
-		Util.verifyForbidden()
-		Controller.model.minGcContent=parser.getfloat("general",'minGcContent')	
-		Controller.model.maxGcContent=parser.getfloat("general",'maxGcContent')
-		print("Loaded Model:",Controller.model.dump())
-						
-	def saveModelToFile():					  
-		# Writing our configuration file to 'example.cfg'
-		config = ConfigParser()
-		config.read(os.path.dirname(os.path.abspath(__file__))+"\\..\\prefs.config")
-		config.set('general', 'minGcContent', str(Controller.model.minGcContent))
-		config.set('general', 'maxGcContent', str(Controller.model.maxGcContent))
-		config.set('general', 'lastfastafile', str(Controller.model.lastFastaFile))
-		configFile= open(os.path.dirname(os.path.abspath(__file__))+"\\..\\prefs.config", 'w') 
-		config.write(configFile)
-		configFile.close()
-
-	def verifyForbidden():
-		for line in Controller.model.forbiddenList:
-			ap:AvoidPattern=AvoidPattern(line.strip() +"_site")
-			if ap.pattern.name is None:       
-				messagebox.showerror("Error in forbidden List",line+" seems to be unknown.\n please doublecheck the spelling")
-
-
+		sequenceTextBox.tag_config("codonHightlighting", background='#ffffd0', foreground="black") # last 2 yellow
+		for co in range(0,len(text),6):
+			sequenceTextBox.tag_add("codonHightlighting", str(lastLine)+"."+str(co), str(lastLine)+"."+str(co+3))	
 

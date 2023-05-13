@@ -26,7 +26,7 @@ class Window:
         # Add a List Scrollbar(vertical)'
         # listScrollbar=Scrollbar(self.Main, orient='vertical')
         # listScrollbar.pack(side = RIGHT, fill = BOTH)
-        Util.loadModelFromFile()
+        UtilFileIO.loadModelFromFile()
         forbiddenItems=[]
         var = Variable(value=forbiddenItems)
         # self.forbiddenList = Listbox( self.Main, listvariable=var, height=1, selectmode=EXTENDED )
@@ -35,13 +35,13 @@ class Window:
          # Add a Scrollbar(horizontal)
         textScrollbar=Scrollbar(self.Main, orient='horizontal')
         textScrollbar.pack(side=BOTTOM, fill='x')  
-        self.sequenceText = Text(self.Main, xscrollcommand=textScrollbar.set,wrap="none" )
+        self.sequenceTextBox:Text = Text(self.Main, xscrollcommand=textScrollbar.set,wrap="none" )
         #self.sequenceText.insert(END, initialText)
-        self.sequenceText.edit
+        self.sequenceTextBox.edit
         Controller.updateView(self)
         #self.forbiddenList.pack(side= RIGHT, fill= BOTH)     
-        self.sequenceText.pack(padx = 5, pady = 5,fill= BOTH)
-        textScrollbar.config(command=self.sequenceText.xview)
+        self.sequenceTextBox.pack(padx = 5, pady = 5,fill= BOTH)
+        textScrollbar.config(command=self.sequenceTextBox.xview)
         #text.pack()
         self.menu = Menu(self.Main)
         self.menu.add_command(label = "Load Fasta", command = self.loadFastaFromFile)
@@ -65,26 +65,26 @@ class Window:
         self.Main.pack(padx = 5, pady = 5, fill= BOTH)
  
     def display(self):
-        print(self.sequenceText.get("1.0", "end"))     
+        print(self.sequenceTextBox.get("1.0", "end"))     
 
     def clear(self):
-        self.sequenceText.delete("1.0", "end")
+        self.sequenceTextBox.delete("1.0", "end")
  
     def stackify(self):
-        self.stack.append(self.sequenceText.get("1.0", "end - 1c"))
+        self.stack.append(self.sequenceTextBox.get("1.0", "end - 1c"))
         if self.stackcursor < 9: self.stackcursor += 1
  
     def undo(self):
         if self.stackcursor != 0:
             self.clear()
             if self.stackcursor > 0: self.stackcursor -= 1
-            self.sequenceText.insert("0.0", self.stack[self.stackcursor])
+            self.sequenceTextBox.insert("0.0", self.stack[self.stackcursor])
  
     def redo(self):
         if len(self.stack) > self.stackcursor + 1:
             self.clear()
             if self.stackcursor < 9: self.stackcursor += 1
-            self.sequenceText.insert("0.0", self.stack[self.stackcursor])
+            self.sequenceTextBox.insert("0.0", self.stack[self.stackcursor])
  
     def printStack(self):
         i = 0
@@ -94,13 +94,13 @@ class Window:
   
     def domesticate(self):
         rootWindow=self.master
-        domesticate(rootWindow, self.sequenceText)
+        domesticate(rootWindow, self.sequenceTextBox)
 
     def loadFastaFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open raw Fasta File',filetypes=(('FASTA files', '*.fa'),('All files', '*.*')))
         theText:str
         theLabel:str
-        theText,theLabel=Util.loadTextFromFile( fileName)
+        theText,theLabel=UtilFileIO.loadTextFromFile( fileName)
         Controller.model.sequenceText=theText
         Controller.model.sequenceLabel=theLabel
         Controller.model.lastFastaFile=fileName
@@ -108,8 +108,8 @@ class Window:
 
     def loadForbiddenListFromFile(self):
         fileName:str = filedialog.askopenfilename(title='Open Forbidden Sequences File',filetypes=(('forbidden Item files', '*.txt'),('All files', '*.*')))
-        Controller.model.forbiddenList=Util.loadListFromFile(fileName)
-        Util.verifyForbidden()
+        Controller.model.forbiddenList=UtilFileIO.loadListFromFile(fileName)
+        UtilFileIO.verifyForbidden()
         Controller.updateView(self)
         self.showForbiddenListFromFile()
 
@@ -141,7 +141,7 @@ def mainUI(text:str):
 
 def onExit():
      #messagebox.showinfo("bye", "bye")
-     Util.saveModelToFile()
+     UtilFileIO.saveModelToFile()
      #os.path.dirname(os.path.abspath(__file__))+"\\..\\default.fa"
      quit()
 	

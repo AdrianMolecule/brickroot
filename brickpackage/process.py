@@ -3,8 +3,9 @@ from brickpackage.DomesticateDialog import DomesticateDialog
 from Bio.SeqFeature import SeqFeature, SimpleLocation, ExactPosition
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
-from brickpackage.Util import Util
+from brickpackage.UtilFileIO import UtilFileIO
 from brickpackage.Controller import Controller
+from brickpackage.Util import Util
 
 from tkinter import messagebox   
 from dnachisel import *
@@ -33,7 +34,7 @@ from dnachisel.DnaOptimizationProblem import DnaOptimizationProblem
 # DEFINE THE OPTIMIZATION PROBLEM
 #s="AAAGGTCTCAAAAAA"
 
-def domesticate(root, sequenceText):
+def domesticate(root, sequenceTextBox):
     # see from Bio import Restriction for name of Retrictions
     d = DomesticateDialog(root, "Domesticate/Optimize Options")
     root.wait_window(d.top)
@@ -77,13 +78,9 @@ def domesticate(root, sequenceText):
     # print("problem.edits as array",problem.sequence_edits_as_array()) 
     # print("problem.number_of_edits as features",problem.sequence_edits_as_features(feature_type="changed codon")) 
     features:list(SeqFeature)=problem.sequence_edits_as_features(feature_type="changed codon")
-    sequenceText.insert(END,"\n"+problem.sequence) # replace can also be used
-    sequenceText.tag_config("start", background="white", foreground="red")
-    for feature in features:
-        #print("feature:",feature.location)
-        sequenceText.tag_add("start", "2."+str(feature.location.start), "2."+str(feature.location.end))
-        #print("qualif:", feature.qualifiers)
-    
+
+    #( sequenceText:Text, problem.sequence:str, features:list):
+    Util.appendDnaLineWithHighlightedCodons(sequenceTextBox, problem.sequence,features)
     record = problem.to_record(with_sequence_edits=True) # TODO add record id ,record_id=Controller.model.
     changedFileName=Controller.model.lastFastaFile[:-3]+"_with_edits.gb"
     changedFile=open(changedFileName,'w')
