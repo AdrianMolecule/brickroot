@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "biobrick"
+authors = [
+    {name = "Adrian", email = "tada@specyal.com"},
+]
+version = "1.0.0"
+description = "parforms Domestication and some optimizations for BioBricks"
+readme = "README.rst"
+requires-python = ">=3.8"
+keywords = ["biology", "synthetic", "cloning","editing", "bioengineering"]
+
+
+#from setuptools import find_packages  # or find_namespace_packages
+#setup(
+    # ...
+ #   packages=find_packages(
+        # All keyword arguments below are optional:
+  #      where='src',  # '.' by default
+   #     include=['brickroot*'],  # ['*'] by default
+    #    exclude=['brickroot.tests'],  # empty by default
+   # ),
+  #3  # ...
+    #dependencies = [
+    #"docutils",
+    #"requests <= 0.4",
+#]

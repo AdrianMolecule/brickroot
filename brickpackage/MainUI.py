@@ -1,18 +1,9 @@
 from tkinter import *
 from tkinter import filedialog
 from collections import deque
-from brickpackage.Util import *
-from brickpackage.process import *
-from brickpackage.Controller import Controller
 from tkinter import messagebox
  
-''' upon start default.fa and default.txt- with forbidden enzymes are loaded'''
-#https://www.bioinformatics.org/sms2/rev_trans.html
-#https://edinburgh-genome-foundry.github.io/
-# https://www.biorxiv.org/content/biorxiv/early/2017/11/26/225284.full.pdf
-#https://en.wikipedia.org/wiki/Chi_site
-# maybe call it standardization or domestication or
-# https://www.biorxiv.org/content/biorxiv/early/2017/11/26/225284.full.pdf shepherd
+
 class Window:
     def __init__(self, master):
         self.master = master
@@ -26,7 +17,6 @@ class Window:
         # Add a List Scrollbar(vertical)'
         # listScrollbar=Scrollbar(self.Main, orient='vertical')
         # listScrollbar.pack(side = RIGHT, fill = BOTH)
-        UtilFileIO.loadModelFromFile()
         forbiddenItems=[]
         var = Variable(value=forbiddenItems)
         # self.forbiddenList = Listbox( self.Main, listvariable=var, height=1, selectmode=EXTENDED )
@@ -38,7 +28,6 @@ class Window:
         self.sequenceTextBox:Text = Text(self.Main, xscrollcommand=textScrollbar.set,wrap="none" )
         #self.sequenceText.insert(END, initialText)
         self.sequenceTextBox.edit
-        Controller.updateView(self)
         #self.forbiddenList.pack(side= RIGHT, fill= BOTH)     
         self.sequenceTextBox.pack(padx = 5, pady = 5,fill= BOTH)
         textScrollbar.config(command=self.sequenceTextBox.xview)
@@ -96,23 +85,7 @@ class Window:
         rootWindow=self.master
         domesticate(rootWindow, self.sequenceTextBox)
 
-    def loadFastaFromFile(self):
-        fileName:str = filedialog.askopenfilename(title='Open raw Fasta File',filetypes=(('FASTA files', '*.fa'),('All files', '*.*')))
-        theText:str
-        theLabel:str
-        theText,theLabel=UtilFileIO.loadTextFromFile( fileName)
-        Controller.model.sequenceText=theText
-        Controller.model.sequenceLabel=theLabel
-        Controller.model.lastFastaFile=fileName
-        Controller.updateView(self)
-
-    def loadForbiddenListFromFile(self):
-        fileName:str = filedialog.askopenfilename(title='Open Forbidden Sequences File',filetypes=(('forbidden Item files', '*.txt'),('All files', '*.*')))
-        Controller.model.forbiddenList=UtilFileIO.loadListFromFile(fileName)
-        UtilFileIO.verifyForbidden()
-        Controller.updateView(self)
-        self.showForbiddenListFromFile()
-
+   
     def showForbiddenListFromFile(self):
         listString=""
         for line in Controller.model.forbiddenList:

@@ -1,0 +1,54 @@
+LOCUS       .                         48 bp    DNA              UNK 01-JAN-1980
+DEFINITION  .
+ACCESSION   <unknown id>
+VERSION     <unknown id>
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     misc_feature    1..48
+                     /role="constraint"
+                     /label="@No 20-160-20bp hairpin"
+                     /color="#355c87"
+                     /ApEinfo_fwdcolor="#355c87"
+                     /ApEinfo_revcolor="#355c87"
+     misc_feature    1..48
+                     /role="constraint"
+                     /label="@cds"
+                     /color="#355c87"
+                     /ApEinfo_fwdcolor="#355c87"
+                     /ApEinfo_revcolor="#355c87"
+     misc_feature    1..48
+                     /role="constraint"
+                     /label="@40-70% GC/50bp"
+                     /color="#355c87"
+                     /ApEinfo_fwdcolor="#355c87"
+                     /ApEinfo_revcolor="#355c87"
+     misc_feature    1..48
+                     /role="constraint"
+                     /label="@No BsaI"
+                     /color="#355c87"
+                     /ApEinfo_fwdcolor="#355c87"
+                     /ApEinfo_revcolor="#355c87"
+     misc_feature    1..48
+                     /role="constraint"
+                     /label="@No BpiI"
+                     /color="#355c87"
+                     /ApEinfo_fwdcolor="#355c87"
+                     /ApEinfo_revcolor="#355c87"
+     misc_feature    1..48
+                     /role="constraint"
+                     /label="@No BsmBI"
+                     /color="#355c87"
+                     /ApEinfo_fwdcolor="#355c87"
+                     /ApEinfo_revcolor="#355c87"
+     misc_feature    1..48
+                     /role="objective"
+                     /label="~best-codon-optimize (e_coli)"
+                     /color="#f9cd60"
+                     /ApEinfo_fwdcolor="#f9cd60"
+                     /ApEinfo_revcolor="#f9cd60"
+ORIGIN
+        1 cggcatatga gcccgcatcc gcatccgcgc catcatcata ccatgctt
+//

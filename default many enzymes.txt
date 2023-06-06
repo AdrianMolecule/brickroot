@@ -1,0 +1,10 @@
+BsaI
+EcoRI
+XbaI
+SpeI
+PstI
+NotI
+AvrII
+NheI
+NsiI
+ApoI
