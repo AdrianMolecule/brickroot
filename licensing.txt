@@ -1,0 +1,4 @@
+This software is copyrighted (copyleft) under the GPLv3 license. https://www.gnu.org/licenses/gpl-3.0.en.html
+# Please see the LICENSE file that should have been included as part of any software that uses this software parts.
+
+
