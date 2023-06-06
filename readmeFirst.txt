@@ -3,3 +3,4 @@ The software automatically reloads the last Fasta file that was previously used 
 This software should be run on any sequence that needs to conform to the Biobrick stadard(s). As there are several version of BioBrick standards with different prohibited enzymes the prohibited enzyme list is editable. Normally it should contain at least Bsa1.
 Optimization supports removing hairpins and changing GC content.
 At this point it supports e-coli and I will add new organism support if asked as it's pretty trivial. 
+Start with start :)
