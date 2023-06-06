@@ -1,0 +1,2 @@
+This software uses/contains several libraries like Biopython and Dnachisel.
+Biopython
