@@ -1,4 +1,4 @@
 This software is copyrighted (copyleft) under the GPLv3 license. https://www.gnu.org/licenses/gpl-3.0.en.html
-# Thius LICENSE file that should be included as part of any software that uses this software parts.
+# This LICENSE file that should be included as part of any software that uses this software parts.
 
 
